@@ -5,18 +5,16 @@
 		</view>
 		<view class="input-phone">
 			<image src="../../static/images/phone.png" mode="widthFix"></image>
-			<input type="text" placeholder="请输入手机号码" value="" v-model="loginInformation.phoneNumber" />
+			<input type="text" @blur="verification" placeholder="请输入手机号码" value="" v-model="loginInformation.phoneNumber" />
 			<image @click="clearForm" class="icon" src="../../static/images/close.png" mode="widthFix"></image>
 		</view>
 		<view class="input-authcode">
 			<image src="../../static/images/verification.png" mode="widthFix"></image>
 			<input type="text" value="" placeholder="请输入验证码" v-model="loginInformation.authCode" />
-			<text class="getcode">| 获取验证码</text>
-			
+			<text class="getcode" @click="sendMessage">{{btnText}}</text>
 		</view>
-
 		<view class="submit">
-			<button type="primary" @click="submit">登录</button>
+			<button type="primary" @click="submit" :disabled="btnDisabled">登录</button>
 		</view>
 	</view>
 </template>
@@ -28,28 +26,87 @@
 				loginInformation: {
 					phoneNumber: "",
 					authCode: "",
-				}
+				},
+				btnText: "| 获取验证码",
+				btnDisabled: false //登陆按钮是否可选
 			}
 		},
 		onLoad() {
 
 		},
 		methods: {
-			goto() {
-				console.log(666)
+			// 手机号码验证函数
+			regPhone(value) {
+				value = parseInt(value)
+				var bu = /^((1[3,5,8,7,9][0-9])|(14[5,7])|(17[0,6,7,8])|(19[7]))\d{8}$/.test(value)
+				return bu
 			},
+			verification() {
+				const res = this.regPhone(this.loginInformation.phoneNumber)
+				if (!res) {
+					uni.showToast({
+						title: '请输入11位手机号码',
+						icon: 'none',
+						duration: 2000
+					});
+					// this.btnDisabled=true
+
+				} else {
+					// this.btnDisabled=false
+				}
+			},
+
+			// 清除电话号码输入框数据
 			clearForm() {
 				this.loginInformation = {
 					phoneNumber: "",
 					authCode: "",
 				}
 			},
-			submit(){
-				// console.log(66)
+			// 发送验证码
+			sendMessage() {
+				if (this.btnDisabled) {
+					return;
+				}
+				this.getSecond(5);
+			},
+			getSecond(wait) {
+				let _this = this;
+				let _wait = wait;
+				if (wait == 0) {
+					this.btnDisabled = false;
+					this.btnText = "获取验证码"
+					wait = _wait;
+				} else {
+					this.btnDisabled = true;
+					this.btnText = "验证码(" + wait + "s)"
+					wait--;
+					setTimeout(function() {
+							_this.getSecond(wait);
+						},
+						1000);
+				}
+			}, // 登陆跳转
+			submit() {
+				if (!this.loginInformation.phoneNumber) {
+					uni.showToast({
+						title: '请输入手机号码',
+						icon: 'none',
+						duration: 2000
+					});
+					return false
+				} else if (!this.loginInformation.authCode) {
+					uni.showToast({
+						title: '请输入短信验证码',
+						icon: 'none',
+						duration: 2000
+					});
+					return false
+				}
 				uni.navigateTo({
-				    url: '../homepage/homepage?id=1&name=uniapp'
+					url: '../homepage/homepage?id=1&name=uniapp'
 				});
-			}
+			},
 		}
 	}
 </script>
@@ -60,7 +117,7 @@
 		padding: 0 50rpx;
 
 		.header-title {
-			margin-top: 238rpx;
+			padding-top: 238rpx;
 			text-align: center;
 			color: #333333;
 			font-size: 32rpx;

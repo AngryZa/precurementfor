@@ -17,6 +17,15 @@
             }
             
         }
+        ,{
+            "path" : "pages/procurement/procurement",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "我的采购申报",
+                "enablePullDownRefresh": false
+            }
+            
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
