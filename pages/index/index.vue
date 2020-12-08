@@ -12,6 +12,7 @@
 			<image src="../../static/images/verification.png" mode="widthFix"></image>
 			<input type="text" value="" placeholder="请输入验证码" v-model="loginInformation.authCode" />
 			<text class="getcode">| 获取验证码</text>
+			
 		</view>
 
 		<view class="submit">
