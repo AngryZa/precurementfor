@@ -26,6 +26,24 @@
             }
             
         }
+        ,{
+            "path" : "pages/approveDetail/approveDetail",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "审批详情",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/backlog/backlog",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "我的待办",
+                "enablePullDownRefresh": false
+            }
+            
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",

@@ -1,7 +1,7 @@
 <template>
 	<view class="wrapper">
 		<view class="content">
-			<li>
+			<li @click="redirect">
 				<view class="li-logo">
 					<image src="../../static/images/member.png" mode=""></image>
 				</view>
@@ -9,11 +9,11 @@
 					<text>我的采购申报</text>
 					<text class="last">My purchase declaration</text>
 				</view>
-				<view class="li-right" @click="redirect">
+				<view class="li-right" >
 					<image src="../../static/images/right.png" mode=""></image>
 				</view>
 			</li>
-			<li>
+			<li  @click="redirect2">
 				<view class="li-logo">
 					<image src="../../static/images/document.png" mode=""></image>
 				</view>
@@ -25,7 +25,7 @@
 					<image src="../../static/images/right.png" mode=""></image>
 				</view>
 			</li>
-			<li>
+			<li @click='exit'>
 				<view class="li-logo">
 					<image src="../../static/images/func.png" mode=""></image>
 				</view>
@@ -46,17 +46,58 @@
 	export default {
 		data() {
 			return {
-
+			personInfo:null
 			}
 		},
 		onLoad(option) {
 			// console.log(option, typeof option)
+			uni.getStorage({
+			    key: 'personInfo',
+			    success: function (res) {
+			        console.log(res.data);
+					this.personInfo=res.data
+			    }
+			});
 		},
 		methods: {
-			redirect(){
+			//跳转到我的采购申报
+			redirect() {
 				console.log(777)
 				uni.navigateTo({
 					url: '../procurement/procurement?id=1&name=uniapp'
+				});
+			},
+			//跳转到我的待办页面
+			redirect2() {
+				console.log(777)
+				uni.navigateTo({
+					url: '../backlog/backlog?id=1&name=uniapp'
+				});
+			},
+			//安全退出
+			exit(){
+				uni.request({
+					url: `http://192.168.0.163:8081/purchase/app/login-out/975`, //仅为示例，并非真实接口地址。
+					success: (res) => {
+						console.log(res.data);
+						if (res.data.code == 201) {
+							console.log('errot')
+							uni.showToast({
+								icon: "loading",
+								title: res.data.msg,
+								duration: 2000
+							});
+						} else {
+							uni.navigateTo({
+								url: '../homepage/homepage?id=1&name=uniapp'
+							});
+						}
+					}
+				});
+				
+				
+				uni.reLaunch({
+				    url: '../index/index'
 				});
 			}
 		}
@@ -97,6 +138,7 @@
 			color: #666666;
 
 		}
+
 		.li-text {
 			width: 300rpx;
 

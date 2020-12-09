@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "审批详情",
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "uni-steps": "/components/uni-steps/uni-steps"
+  }
+}

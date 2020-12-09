@@ -65,6 +65,19 @@
 			},
 			// 发送验证码
 			sendMessage() {
+				uni.request({
+					url: `http://192.168.0.163:8081/purchase/app/get-code/${this.loginInformation.phoneNumber}`, //仅为示例，并非真实接口地址。
+					data: {
+						// getcode: '13548077245'
+					},
+					header: {
+						// 'custom-header': 'hello',
+						//自定义请求头信息
+					},
+					success: (res) => {
+						// console.log(res.data);
+					}
+				});
 				if (this.btnDisabled) {
 					return;
 				}
@@ -103,9 +116,34 @@
 					});
 					return false
 				}
-				uni.navigateTo({
+				const url = `/app/login/${this.loginInformation.phoneNumber}/${this.loginInformation.authCode}`
+				this.$http('get', url, "").then(res => {
+					console.log(res, typeof res, 'res34843839jfdjhhf')
+
+					if (res.code != 200) {
+						uni.showToast({
+							icon: "loading",
+							title: res.msg,
+							duration: 2000
+						});
+					} else {
+						// 存储token
+						uni.setStorage({
+							key: 'personInfo',
+							data: res.data,
+							success: function() {
+								uni.navigateTo({
+									url: '../homepage/homepage?id=1&name=uniapp'
+								});
+							}
+						});
+					}
+				})
+				
+				/* uni.navigateTo({
 					url: '../homepage/homepage?id=1&name=uniapp'
-				});
+				}); */
+
 			},
 		}
 	}

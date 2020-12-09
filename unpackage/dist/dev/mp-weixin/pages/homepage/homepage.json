@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "业务入口",
+  "navigationBarTextStyle": "white",
+  "navigationBarBackgroundColor": "#2D82FF",
+  "enablePullDownRefresh": false,
+  "usingComponents": {}
+}

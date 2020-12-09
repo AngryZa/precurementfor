@@ -4,43 +4,18 @@
 			<tabs :tabData="tabs" :activeIndex="activeIndex" @tabClick='tabClick' />
 		</view>
 		<view class="content">
-			<li>
+			<li v-for="(item,index) in listData" :key="index">
 				<view class="description">
-					<text>申请日期：2020-01-01 12:10</text>
-					<text>经费项目名称：采购设备</text>
-					<text>经费账号：46231354623</text>
+					<text>申请日期：{{item.date}} 12:10</text>
+					<text>经费项目名称：{{item.name}}</text>
+					<text>经费账号：{{item.account}}</text>
 				</view>
 				<view class="details">
-					<text>查看详情</text>
-					<text>查看审批详情</text>
+					<text @click="checkDetail">查看详情</text>
+					<text @click="checkApprove">查看审批详情</text>
 					<span class="datails-boundary">|</span>
 				</view>
 			</li>
-			<li>
-				<view class="description">
-					<text>申请日期：2020-01-01 12:10</text>
-					<text>经费项目名称：采购设备</text>
-					<text>经费账号：46231354623</text>
-				</view>
-				<view class="details">
-					<text>查看详情</text>
-					<text>查看审批详情</text>
-					<span class="datails-boundary">|</span>
-				</view>
-			</li>
-			<li>
-				<view class="description">
-					<text>申请日期：2020-01-01 12:10</text>
-					<text>经费项目名称：采购设备</text>
-					<text>经费账号：46231354623</text>
-				</view>
-				<view class="details">
-					<text>查看详情</text>
-					<text>查看审批详情</text>
-					<span class="datails-boundary">|</span>
-				</view>
-			</li>
-
 		</view>
 	</view>
 </template>
@@ -61,14 +36,58 @@
 					'已完结',
 					'申请终止',
 					'已终止',
-					'已终止',
 				],
 				activeIndex: 0, //传入的值必须是NUMBER类型
+				listData: null
 			}
+		},
+		onLoad() {
+			this.$http('get', '/web/api/declare/get/count?null').then((res) => {
+				console.log(res.data)
+			})
+			this.getData(0)
 		},
 		methods: {
 			tabClick(index) {
 				console.log(index, 'index')
+				// 0开始
+				this.getData(index)
+			},
+			//查看详情
+			checkDetail() {
+
+			},
+			//查看审批详情
+			checkApprove() {
+				uni.navigateTo({
+					url: '../approveDetail/approveDetail?id=1&name=uniapp'
+				});
+			},
+			//数据请求函数
+			getData(k) {
+				const data = {
+					page: 1,
+					size: 15,
+					username: null,
+					number: null,
+					account: null,
+					state: k + 1,
+				}
+				this.$http('POST', '/web/api/declare/select/page', data).then(res => {
+					if (res.code != 200) {
+						console.log('没有数据或者其他原因')
+					} else {
+						// console.log(res.data.list)
+						if (res.data.list.length == 0) {
+							uni.showToast({
+								icon: "loading",
+								title: ` 没有相关页面信息 `,
+								duration: 500
+							});
+						}
+						this.listData = res.data.list
+					}
+				})
 			}
 		}
 	}

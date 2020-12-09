@@ -1,6 +1,10 @@
 {
   "pages": [
-    "pages/index/index"
+    "pages/index/index",
+    "pages/homepage/homepage",
+    "pages/procurement/procurement",
+    "pages/approveDetail/approveDetail",
+    "pages/backlog/backlog"
   ],
   "subPackages": [],
   "window": {
