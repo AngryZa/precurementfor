@@ -22,7 +22,7 @@
             "style" :                                                                                    
             {
                 "navigationBarTitleText": "我的采购申报",
-                "enablePullDownRefresh": false
+                "enablePullDownRefresh": true
             }
             
         }
@@ -40,6 +40,15 @@
             "style" :                                                                                    
             {
                 "navigationBarTitleText": "我的待办",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/purchaseDetail/purchaseDetail",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "采购申请详情",
                 "enablePullDownRefresh": false
             }
             

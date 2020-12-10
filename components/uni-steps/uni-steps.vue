@@ -3,11 +3,10 @@
 		<view :class="[direction==='column'?'uni-steps__column':'uni-steps__row']">
 			<view :class="[direction==='column'?'uni-steps__column-text-container':'uni-steps__row-text-container']">
 				<view v-for="(item,index) in options" :key="index" :class="[direction==='column'?'uni-steps__column-text':'uni-steps__row-text']">
-					<text :style="{color:index<=active?activeColor:deactiveColor}" :class="[direction==='column'?'uni-steps__column-title':'uni-steps__row-title']">{{item.title}}</text>
-					<text :style="{color:index<=active?activeColor:deactiveColor}" :class="[direction==='column'?'uni-steps__column-desc':'uni-steps__row-desc']">{{item.approver}}
-						&nbsp&nbsp {{item.desc}}</text>
-					<text @click="open" v-if="item.opinion" :style="{color:index<=active?activeColor:deactiveColor}" :class="[direction==='column'?'uni-steps__column-opinion':'uni-steps__row-opinion']">
-						<image src="../../static/images/finished.png" mode=""></image> {{item.opinion}}
+					<text :style="{color:index<=active?activeColor:deactiveColor}" :class="[direction==='column'?'uni-steps__column-title':'uni-steps__row-title']">{{item.roleName}}</text>
+					<text :style="{color:index<=active?activeColor:deactiveColor}" :class="[direction==='column'?'uni-steps__column-desc':'uni-steps__row-desc']">{{item.name}}&nbsp&nbsp{{item.cTime?item.cTime:'待审时间未定'}}</text>
+					<text @click="open(index)" :style="{color:index<=active?activeColor:deactiveColor}" :class="[direction==='column'?'uni-steps__column-opinion':'uni-steps__row-opinion']">
+						<image src="../../static/images/finished.png" mode="" v-if="item.remark"></image> {{item.remark?'审批意见':'未审批'}}
 					</text>
 				</view>
 			</view>
@@ -27,12 +26,15 @@
 		</view>
 		
 		<uni-popup ref="popup" type="dialog">
-		    <uni-popup-dialog title="审批意见" type="success" message="成功消息" content="通过通过通过通过通过通过通过通过通过通过通过通过通过通过通过通过通过通过通过通过" :duration="2000" :before-close="true" @close="close" @confirm="confirm"></uni-popup-dialog>
+			<uni-popup-dialog    title="审批意见" type="success" message="成功消息"  :content='remark'
+			 :duration="2000" :before-close="true" @close="close" @confirm="confirm"></uni-popup-dialog>
 		</uni-popup>
 	</view>
 </template>
 
 <script>
+		
+	// import Bus from "@/js/bus.js";
 	import uniIcons from '../uni-icons/uni-icons.vue'
 	import uniPopup from '@/components/uni-popup/uni-popup.vue'
 	import uniPopupMessage from '@/components/uni-popup/uni-popup-message.vue'
@@ -74,23 +76,30 @@
 			} // 数据
 		},
 		data() {
-			return {}
+			return {
+				index:0 ,//点击默认值
+				remark:'1637',
+				
+			}
 		},
 		methods: {
-			open(){
+			open(key) {
+				console.log(this.options,'options')
+				this.remark=this.options[key].remark
+				console.log(this.remake,'remake')
 				this.$refs.popup.open()
 			},
-			close(done){
-			            // TODO 做一些其他的事情，before-close 为true的情况下，手动执行 done 才会关闭对话框
-			            // ...
-			            done()
-			        },
-			confirm(done,value){
-			            // 输入框的值
-			            console.log(value)
-			            // TODO 做一些其他的事情，手动执行 done 才会关闭对话框
-			            // ...
-			            done()
+			close(done) {
+				// TODO 做一些其他的事情，before-close 为true的情况下，手动执行 done 才会关闭对话框
+				// ...
+				done()
+			},
+			confirm(done, value) {
+				// 输入框的值
+				console.log(value)
+				// TODO 做一些其他的事情，手动执行 done 才会关闭对话框
+				// ...
+				done()
 			}
 		}
 	}

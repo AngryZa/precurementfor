@@ -30,7 +30,6 @@
   padding: 30rpx;
   list-style: none;
   width: 690rpx;
-  height: 394rpx;
   -webkit-box-shadow: 0rpx 1rpx 34rpx 0rpx rgba(0, 0, 0, 0.09);
           box-shadow: 0rpx 1rpx 34rpx 0rpx rgba(0, 0, 0, 0.09);
   -webkit-border-radius: 20rpx;
@@ -55,7 +54,7 @@
   width: 153rpx;
   height: 56rpx;
   line-height: 56rpx;
-  top: 80rpx;
+  top: 100rpx;
   right: 0;
   background-color: #DF7373;
   -webkit-border-radius: 30rpx;

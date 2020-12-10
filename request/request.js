@@ -12,8 +12,8 @@ const http = (method, url, data) => {
 		data: data,
 		method: method,
 		header: {
-			// 'token': token,
-			'token': '396916CEE8CB053090DA44386A142B89;66',
+			'token': token,
+			// 'token': '396916CEE8CB053090DA44386A142B89;66',
 			
 			// 'X-Requested-With': 'XMLHttpRequest',
 			// 'Content-Type': 'application/json'

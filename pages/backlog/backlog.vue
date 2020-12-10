@@ -4,13 +4,13 @@
 			<tabs :tabData="tabs" :activeIndex="activeIndex" @tabClick='tabClick' />
 		</view>
 		<view class="content">
-			<li>
+			<li v-for="(item,key) in listData" :key="key" >
 				<view class="description">
-					<text>申请日期：2020-01-01 12:10</text>
-					<text>申请单位：研究生院</text>
-					<text>采购项目负责人：张三</text>
-					<text>经费项目名称：逸夫楼消防中控柜</text>
-					<text>经费账号：46231354623</text>
+					<text>申请日期：{{item.date}}</text>
+					<text>申请单位：{{item.orgName}}</text>
+					<text>采购项目负责人：{{item.username}}</text>
+					<text>经费项目名称：{{item.name}}</text>
+					<text>经费账号：{{item.account}}</text>
 					<button type="default" class="btn" @click="open" >审批</button>
 				</view>
 				<view class="details">
@@ -48,12 +48,22 @@
 					'驳回',
 				],
 				activeIndex: 0, //传入的值必须是NUMBER类型
+				listData:[]
 			}
+		},
+		onLoad() {
+			this.$http('POST', '/web/api/agency/select/page').then((res) => {
+				console.log(res.data)
+			})
+			this.getData(0)
+			console.log(this.listData,123)
 		},
 		methods: {
 			// 点击Tab显示索引
 			tabClick(index) {
 				console.log(index, 'index')
+				
+				
 			},
 			open(){
 				this.$refs.popup.open()
@@ -69,7 +79,42 @@
 			            // TODO 做一些其他的事情，手动执行 done 才会关闭对话框
 			            // ...
 			            done()
-			}
+			},
+			//数据请求函数
+			getData(k, j) {
+				const data = {
+					page: j,
+					size: 15,
+					username: null,
+					number: null,
+					account: null,
+					state: k + 1,
+				}
+				this.$http('POST', '/web/api/agency/select/page', data).then(res => {
+					if (res.code != 200) {
+						// console.log(res,'res')
+						uni.showLoading({
+							title: res.msg
+						});
+						setTimeout(function() {
+							uni.hideLoading();
+						}, 2000);
+					} else {
+						// console.log(res.data.list)
+						if (res.data.list.length == 0) {
+							uni.showToast({
+								icon: "loading",
+								title: ` 没有相关页面信息 `,
+								duration: 500
+							});
+						}
+						let rets = res.data.list
+						for (var i in rets) {
+							this.listData.push(rets[i]);
+						}
+					}
+				})
+			},
 		}
 	}
 </script>
@@ -80,7 +125,7 @@ li {
 		padding: 30rpx;
 		list-style: none;
 		width: 690rpx;
-		height: 394rpx;
+		// height: 394rpx;
 		box-shadow: 0rpx 1rpx 34rpx 0rpx rgba(0, 0, 0, 0.09);
 		border-radius: 20rpx;
 		margin-bottom: 25rpx;
@@ -100,7 +145,7 @@ li {
 				width: 153rpx;
 				height: 56rpx;
 				line-height: 56rpx;
-				top: 80rpx;
+				top: 100rpx;
 				right: 0;
 				background-color: #DF7373;
 				border-radius: 30rpx;

@@ -11,8 +11,8 @@
 					<text>经费账号：{{item.account}}</text>
 				</view>
 				<view class="details">
-					<text @click="checkDetail">查看详情</text>
-					<text @click="checkApprove">查看审批详情</text>
+					<text @click="checkDetail(item.id)">查看详情</text>
+					<text @click="checkApprove(item.id)">查看审批详情</text>
 					<span class="datails-boundary">|</span>
 				</view>
 			</li>
@@ -38,7 +38,9 @@
 					'已终止',
 				],
 				activeIndex: 0, //传入的值必须是NUMBER类型
-				listData: null
+				listData: [],
+				indicator: 0, //用于存储记忆当前页面的state
+				bottomIndex: 0 //用于储存记忆触底事件
 			}
 		},
 		onLoad() {
@@ -49,24 +51,30 @@
 		},
 		methods: {
 			tabClick(index) {
-				console.log(index, 'index')
+				this.bottomIndex = 0
+				this.listData = []
+				this.indicator = index
+				console.log(this.indicator, 'indicator')
 				// 0开始
 				this.getData(index)
 			},
 			//查看详情
-			checkDetail() {
-
+			checkDetail(id) {
+				uni.navigateTo({
+					url: `../purchaseDetail/purchaseDetail?id=${id}`,
+				});
 			},
 			//查看审批详情
-			checkApprove() {
+			checkApprove(id) {
+				// console.log(id)
 				uni.navigateTo({
-					url: '../approveDetail/approveDetail?id=1&name=uniapp'
+					url: `../approveDetail/approveDetail?id=${id}`,
 				});
 			},
 			//数据请求函数
-			getData(k) {
+			getData(k, j) {
 				const data = {
-					page: 1,
+					page: j,
 					size: 15,
 					username: null,
 					number: null,
@@ -75,7 +83,13 @@
 				}
 				this.$http('POST', '/web/api/declare/select/page', data).then(res => {
 					if (res.code != 200) {
-						console.log('没有数据或者其他原因')
+						// console.log(res,'res')
+						uni.showLoading({
+							title: res.msg
+						});
+						setTimeout(function() {
+							uni.hideLoading();
+						}, 2000);
 					} else {
 						// console.log(res.data.list)
 						if (res.data.list.length == 0) {
@@ -85,9 +99,26 @@
 								duration: 500
 							});
 						}
-						this.listData = res.data.list
+						let rets = res.data.list
+						for (var i in rets) {
+							this.listData.push(rets[i]);
+						}
 					}
 				})
+			},
+			//触底事件
+			onReachBottom(e) {
+
+				this.bottomIndex = this.bottomIndex + 1
+				this.getData(this.indicator, this.bottomIndex + 1)
+				console.log('触底加载更多');
+			},
+			onPullDownRefresh() {
+				this.listData = []
+				this.getData(this.indicator)
+				setTimeout(function() {
+					uni.stopPullDownRefresh();
+				}, 1000);
 			}
 		}
 	}
@@ -99,7 +130,7 @@
 		padding: 30rpx;
 		list-style: none;
 		width: 690rpx;
-		height: 286rpx;
+		// height: 286rpx;
 		box-shadow: 0rpx 1rpx 34rpx 0rpx rgba(0, 0, 0, 0.09);
 		border-radius: 20rpx;
 		margin-bottom: 25rpx;

@@ -1,6 +1,6 @@
 {
   "navigationBarTitleText": "我的采购申报",
-  "enablePullDownRefresh": false,
+  "enablePullDownRefresh": true,
   "usingComponents": {
     "tabs": "/components/tabs/tabs"
   }
