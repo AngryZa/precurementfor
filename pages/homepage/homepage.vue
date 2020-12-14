@@ -9,11 +9,11 @@
 					<text>我的采购申报</text>
 					<text class="last">My purchase declaration</text>
 				</view>
-				<view class="li-right" >
+				<view class="li-right">
 					<image src="../../static/images/right.png" mode=""></image>
 				</view>
 			</li>
-			<li  @click="redirect2">
+			<li @click="redirect2">
 				<view class="li-logo">
 					<image src="../../static/images/document.png" mode=""></image>
 				</view>
@@ -46,36 +46,49 @@
 	export default {
 		data() {
 			return {
-			personInfo:null
+				personInfo: null
 			}
 		},
 		onLoad(option) {
 			// console.log(option, typeof option)
-			uni.getStorage({
+			/* uni.getStorage({
 			    key: 'personInfo',
 			    success: function (res) {
-			        console.log(res.data);
 					this.personInfo=res.data
+			        console.log(this.personInfo,'this.personInfo');
 			    }
-			});
+			}); */
+
+
+			try {
+				const value = uni.getStorageSync('personInfo');
+				if (value) {
+					this.personInfo = value
+					// console.log(value);
+				}
+			} catch (e) {
+				// error
+			}
+
+
 		},
 		methods: {
 			//跳转到我的采购申报
 			redirect() {
-				console.log(777)
+				// console.log(777)
 				uni.navigateTo({
 					url: '../procurement/procurement?id=1&name=uniapp'
 				});
 			},
 			//跳转到我的待办页面
 			redirect2() {
-				console.log(777)
+				console.log(this.personInfo)
 				uni.navigateTo({
-					url: '../backlog/backlog?id=1&name=uniapp'
+					url: `../backlog/backlog?id=${this.personInfo.id}&name=${this.personInfo.name}`
 				});
 			},
 			//安全退出
-			exit(){
+			exit() {
 				uni.request({
 					url: `http://192.168.0.163:8081/purchase/app/login-out/975`, //仅为示例，并非真实接口地址。
 					success: (res) => {
@@ -94,10 +107,10 @@
 						}
 					}
 				});
-				
-				
+
+
 				uni.reLaunch({
-				    url: '../index/index'
+					url: '../index/index'
 				});
 			}
 		}

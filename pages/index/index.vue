@@ -65,7 +65,7 @@
 			},
 			// 发送验证码
 			sendMessage() {
-				uni.request({
+				/* uni.request({
 					url: `http://192.168.0.163:8081/purchase/app/get-code/${this.loginInformation.phoneNumber}`, //仅为示例，并非真实接口地址。
 					data: {
 						// getcode: '13548077245'
@@ -80,7 +80,12 @@
 				});
 				if (this.btnDisabled) {
 					return;
-				}
+				} */
+				this.$http('get',`/web/app/get-code/${this.loginInformation.phoneNumber}`).then((data)=>{
+					console.log(123,data)
+				})
+				
+				
 				this.getSecond(5);
 			},
 			getSecond(wait) {
@@ -116,7 +121,7 @@
 					});
 					return false
 				}
-				const url = `/app/login/${this.loginInformation.phoneNumber}/${this.loginInformation.authCode}`
+				const url = `/web/app/login/${this.loginInformation.phoneNumber}/${this.loginInformation.authCode}`
 				this.$http('get', url, "").then(res => {
 					console.log(res, typeof res, 'res34843839jfdjhhf')
 

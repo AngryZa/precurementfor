@@ -108,7 +108,6 @@
 			},
 			//触底事件
 			onReachBottom(e) {
-
 				this.bottomIndex = this.bottomIndex + 1
 				this.getData(this.indicator, this.bottomIndex + 1)
 				console.log('触底加载更多');

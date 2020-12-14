@@ -1,4 +1,4 @@
-const baseUrl = 'http://192.168.0.163:8081/purchase';
+const baseUrl = 'http://192.168.0.155:8081/purchase';
 // const baseUrl = 'http://bibi.cc';
 const http = (method, url, data) => {
 	let token = "";

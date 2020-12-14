@@ -4,14 +4,14 @@
 			<tabs :tabData="tabs" :activeIndex="activeIndex" @tabClick='tabClick' />
 		</view>
 		<view class="content">
-			<li v-for="(item,key) in listData" :key="key" >
+			<li v-for="(item,key) in listData" :key="key">
 				<view class="description">
 					<text>申请日期：{{item.date}}</text>
 					<text>申请单位：{{item.orgName}}</text>
 					<text>采购项目负责人：{{item.username}}</text>
 					<text>经费项目名称：{{item.name}}</text>
 					<text>经费账号：{{item.account}}</text>
-					<button type="default" class="btn" @click="open" >审批</button>
+					<button type="default" class="btn" @click="open">审批</button>
 				</view>
 				<view class="details">
 					<text @click="checkDetail">查看详情</text>
@@ -20,10 +20,11 @@
 				</view>
 			</li>
 		</view>
-		
+
 		<!-- Popup 弹出框 -->
 		<uni-popup ref="popup" type="dialog">
-		    <uni-popup-dialog title="审批" type="success" message="成功消息" content="该条采购申请单是否通过？" :duration="2000" :before-close="true" @close="close" @confirm="confirm"></uni-popup-dialog>
+			<uni-popup-dialog title="审批" type="success" message="成功消息" content="该条采购申请单是否通过？" :duration="2000" :before-close="true"
+			 @close="close" @confirm="confirm"></uni-popup-dialog>
 		</uni-popup>
 	</view>
 </template>
@@ -48,79 +49,114 @@
 					'驳回',
 				],
 				activeIndex: 0, //传入的值必须是NUMBER类型
-				listData:[]
+				listData: [],
+				state: 3 ,//记录数据的状态
+				pageTotal:null ,//总页数
+				page:null //当前页数
 			}
 		},
-		onLoad() {
-			this.$http('POST', '/web/api/agency/select/page').then((res) => {
-				console.log(res.data)
-			})
-			this.getData(0)
-			console.log(this.listData,123)
+		onLoad(option) {
+			// console.log(option, 'option')
+			this.getData(3, 1)
+			// console.log(this.listData, 123)
 		},
 		methods: {
 			// 点击Tab显示索引
 			tabClick(index) {
-				console.log(index, 'index')
-				
-				
+				this.listData = []
+				// this.getData(index,1)
+				if (index == 0) {
+					this.state = 3
+					this.getData(3, 1)
+				} else if (index == 1) {
+					this.state = 1
+					this.getData(1, 1)
+				} else {
+					this.state = 2
+					this.getData(2, 1)
+				}
+				// console.log(index, 'index')
 			},
-			open(){
+			open() {
 				this.$refs.popup.open()
 			},
-			close(done){
-			            // TODO 做一些其他的事情，before-close 为true的情况下，手动执行 done 才会关闭对话框
-			            // ...
-			            done()
-			        },
-			confirm(done,value){
-			            // 输入框的值
-			            console.log(value)
-			            // TODO 做一些其他的事情，手动执行 done 才会关闭对话框
-			            // ...
-			            done()
+			close(done) {
+				// TODO 做一些其他的事情，before-close 为true的情况下，手动执行 done 才会关闭对话框
+				// ...
+				done()
+			},
+			confirm(done, value) {
+				// 输入框的值
+				console.log(value)
+				// TODO 做一些其他的事情，手动执行 done 才会关闭对话框
+				// ...
+				done()
 			},
 			//数据请求函数
-			getData(k, j) {
-				const data = {
-					page: j,
-					size: 15,
-					username: null,
-					number: null,
-					account: null,
-					state: k + 1,
-				}
-				this.$http('POST', '/web/api/agency/select/page', data).then(res => {
+			// j 状态  k 页数   
+			getData(j, k) {
+				this.$http('GET', `/web/app/get-upcoming/137/${j}/${k}/15`).then(res => {
 					if (res.code != 200) {
-						// console.log(res,'res')
-						uni.showLoading({
-							title: res.msg
+						uni.showToast({
+							title: 'res.msg',
 						});
-						setTimeout(function() {
-							uni.hideLoading();
-						}, 2000);
+						setTimeout(() => {
+							uni.hideToast();
+						}, 200)
 					} else {
-						// console.log(res.data.list)
 						if (res.data.list.length == 0) {
 							uni.showToast({
-								icon: "loading",
-								title: ` 没有相关页面信息 `,
-								duration: 500
+								title: '没有相关页面信息',
+								// icon:'none'
 							});
-						}
-						let rets = res.data.list
-						for (var i in rets) {
-							this.listData.push(rets[i]);
+							setTimeout(() => {
+								uni.hideToast();
+							}, 2000)
+						} else {
+							uni.showToast({
+								title: '更新页面成功',
+							});
+							setTimeout(() => {
+								uni.hideToast();
+							}, 2000)
+							let rets = res.data.list
+							this.pageTotal=res.data.pageTotal
+							this.page=res.data.page
+							for (var i in rets) {
+								this.listData.push(rets[i]);
+							}
 						}
 					}
 				})
 			},
+			// 下拉刷新
+			onPullDownRefresh() {
+				const _this = this
+				_this.listData = []
+				setTimeout(function() {
+					_this.getData(_this.state, 1)
+					uni.stopPullDownRefresh();
+				}, 1000);
+			},
+			onReachBottom(){
+				if(this.page>=this.pageTotal){
+					uni.showToast({
+						title: '没有更多数据加载',
+					});
+					setTimeout(() => {
+						uni.hideToast();
+					}, 2000)
+				}else{
+					this.getData(this.state, this.page+1)
+				}
+			}
+
 		}
 	}
 </script>
 
 <style lang="scss" scoped>
-li {
+	li {
 		box-sizing: border-box;
 		padding: 30rpx;
 		list-style: none;
@@ -139,8 +175,8 @@ li {
 				font-weight: 400;
 				line-height: 50rpx;
 			}
-				
-			.btn{
+
+			.btn {
 				position: absolute;
 				width: 153rpx;
 				height: 56rpx;
@@ -151,6 +187,7 @@ li {
 				border-radius: 30rpx;
 				color: #FFFFFF;
 			}
+
 			position: relative;
 			padding-bottom: 20rpx;
 			border-bottom: 2rpx solid #E0E0E0;
