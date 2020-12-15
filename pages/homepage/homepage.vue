@@ -37,7 +37,6 @@
 					<image src="../../static/images/right.png" mode=""></image>
 				</view>
 			</li>
-
 		</view>
 	</view>
 </template>

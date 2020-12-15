@@ -2,7 +2,8 @@
 	<view class="wrapper">
 		<view class="lists">
 			<uni-list class="column1">
-				<uni-list-item title="申请单位" note="" :rightText="info.orgName"></uni-list-item>
+				<!-- <uni-list-item title="申请单位" note="" :rightText="info.orgName"></uni-list-item> -->
+				<uni-list-item title="申请单位" note="" :rightText="finalOrgName"></uni-list-item>
 				<uni-list-item title="项目负责人" note="" :rightText="info.username"></uni-list-item>
 				<uni-list-item title="联系电话" note="" :rightText="info.phone"></uni-list-item>
 				<uni-list-item title="申请日期" note="" :rightText="info.date"></uni-list-item>
@@ -176,13 +177,15 @@
 				listData: null,
 				info: {},
 				testText: 'niua',
-				batchList: null
+				batchList: null,
+				applicantList: null //申请单位列表
 			}
 		},
 		onLoad(option) {
-			console.log(option,'option')
+
+			// console.log(option,'option')
 			this.id = option.id
-			console.log(this.id, 'id')
+			// console.log(this.id, 'id')
 			this.getData(this.id)
 		},
 		computed: {
@@ -213,46 +216,85 @@
 
 					return ''
 				}
+			},
+			finalOrgName(){
+				
+				const key=this.info.orgId
+				let orgArr=null
+				if(this.applicantList){
+					orgArr=this.applicantList.filter((item=>{
+						return item.id==key
+					}))
+					console.log(orgArr,'b')
+					return 1
+				}else{
+					return ''
+				}
 			}
 		},
 		methods: {
-			getData(id) {
-				this.$http('GET', `/web/api/purchaseInfo/get/${id}?null`, ).then(res => {
-				// this.$http('GET', `/web/api/purchaseApproval/get/${id}?null`, ).then(res => {
+			// 获取申请单位列表
+			async getList() {
+				return new Promise((resolve, reject) => {
+					this.$http('GET', '/web/api/org/select/all/to').then((res) => {
+						if (res.code == 200) {
+							// this.applicantList=res.data
+							resolve(res.data)
+						} else {
+							/* uni.showToast({
+								title:res.msg
+							})
+							setTimeout(()=>{
+								uni.hideToast()
+							},2000) */
+							reject(res)
+						}
+					})
+				})
+
+			},
+			async getData(id) {
+				// this.$http('GET', `/web/api/purchaseInfo/get/${id}?null`, ).then(res => {
+
+				var ret = await this.getList()
+				// console.log(ret,'1')
+				this.applicantList = ret
+				this.$http('GET', `/web/api/purchaseApproval/get/${id}?null`, ).then(res => {
 					// 错误处理
 					if (res.code != 200) {
 						uni.showToast({
-						    title: res.msg,
-						    duration: 2000,
-							icon:'loading'
+							title: res.msg,
+							duration: 2000,
+							icon: 'loading'
 						});
-						setTimeout(()=>{
+						setTimeout(() => {
 							uni.hideToast();
-						},1000)
+						}, 1000)
 					} else {
+						// console.log(2,this.applicantList)
 						uni.showToast({
-						    title: '更新页面成功',
+							title: '更新页面成功',
 							duration: 2000
 						});
-						setTimeout(()=>{
+						setTimeout(() => {
 							uni.hideToast();
-						},1000)
+						}, 1000)
 						this.listData = res.data
 						this.info = res.data.info
 						this.batchList = res.data.inventory
 					}
 				})
-				
-				
-				
-				
+
+
+
+
 			},
 			onPullDownRefresh() {
 				this.getData(this.id)
 				setTimeout(function() {
 					uni.stopPullDownRefresh();
 				}, 1000);
-				
+
 			}
 		}
 	}
