@@ -218,15 +218,16 @@
 				}
 			},
 			finalOrgName(){
-				
 				const key=this.info.orgId
+				console.log(this.applicantList)
 				let orgArr=null
 				if(this.applicantList){
 					orgArr=this.applicantList.filter((item=>{
 						return item.id==key
 					}))
-					console.log(orgArr,'b')
-					return 1
+					if(orgArr[0]){
+					return orgArr[0].title
+					}
 				}else{
 					return ''
 				}

@@ -94,7 +94,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "components", function() { return components; });
 var components = {
   tabs: function() {
-    return __webpack_require__.e(/*! import() | components/tabs/tabs */ "components/tabs/tabs").then(__webpack_require__.bind(null, /*! @/components/tabs/tabs.vue */ 60))
+    return __webpack_require__.e(/*! import() | components/tabs/tabs */ "components/tabs/tabs").then(__webpack_require__.bind(null, /*! @/components/tabs/tabs.vue */ 71))
   }
 }
 var render = function() {
@@ -134,7 +134,7 @@ __webpack_require__.r(__webpack_exports__);
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var Tabs = function Tabs() {__webpack_require__.e(/*! require.ensure | components/tabs/tabs */ "components/tabs/tabs").then((function () {return resolve(__webpack_require__(/*! @/components/tabs/tabs.vue */ 60));}).bind(null, __webpack_require__)).catch(__webpack_require__.oe);};var _default =
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var Tabs = function Tabs() {__webpack_require__.e(/*! require.ensure | components/tabs/tabs */ "components/tabs/tabs").then((function () {return resolve(__webpack_require__(/*! @/components/tabs/tabs.vue */ 71));}).bind(null, __webpack_require__)).catch(__webpack_require__.oe);};var _default =
 
 
 
@@ -244,7 +244,6 @@ __webpack_require__.r(__webpack_exports__);
     },
     //触底事件
     onReachBottom: function onReachBottom(e) {
-
       this.bottomIndex = this.bottomIndex + 1;
       this.getData(this.indicator, this.bottomIndex + 1);
       console.log('触底加载更多');

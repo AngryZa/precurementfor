@@ -69,6 +69,7 @@
 		},
 		data() {
 			return {
+				id:null,
 				tabs: [
 					'待审核',
 					'审核过',
@@ -100,6 +101,7 @@
 		},
 		onLoad(option) {
 			// console.log(option, 'option')
+			this.id=option.id
 			this.getData(3, 1)
 			// console.log(this.listData, 123)
 		},
@@ -215,7 +217,7 @@
 			//数据请求函数
 			// j 状态  k 页数   
 			getData(j, k) {
-				this.$http('GET', `/web/app/get-upcoming/137/${j}/${k}/15`).then(res => {
+				this.$http('GET', `/web/app/get-upcoming/${this.id}/${j}/${k}/15`).then(res => {
 					if (res.code != 200) {
 						uni.showToast({
 							title: 'res.msg',

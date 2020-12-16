@@ -94,10 +94,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "components", function() { return components; });
 var components = {
   uniList: function() {
-    return __webpack_require__.e(/*! import() | components/uni-list/uni-list */ "components/uni-list/uni-list").then(__webpack_require__.bind(null, /*! @/components/uni-list/uni-list.vue */ 97))
+    return __webpack_require__.e(/*! import() | components/uni-list/uni-list */ "components/uni-list/uni-list").then(__webpack_require__.bind(null, /*! @/components/uni-list/uni-list.vue */ 92))
   },
   uniListItem: function() {
-    return __webpack_require__.e(/*! import() | components/uni-list-item/uni-list-item */ "components/uni-list-item/uni-list-item").then(__webpack_require__.bind(null, /*! @/components/uni-list-item/uni-list-item.vue */ 104))
+    return __webpack_require__.e(/*! import() | components/uni-list-item/uni-list-item */ "components/uni-list-item/uni-list-item").then(__webpack_require__.bind(null, /*! @/components/uni-list-item/uni-list-item.vue */ 99))
   }
 }
 var render = function() {
@@ -137,7 +137,141 @@ __webpack_require__.r(__webpack_exports__);
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0; //
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0; //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -196,14 +330,131 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 var _default =
 {
   data: function data() {
-    return {};
-
+    return {
+      id: null, //采购申报列表详情ID
+      listData: null,
+      info: {},
+      testText: 'niua',
+      batchList: null };
 
   },
   onLoad: function onLoad(option) {
-    // console.log(option)
+    console.log(option, 'option');
+    this.id = option.id;
+    console.log(this.id, 'id');
+    this.getData(this.id);
   },
-  methods: {} };exports.default = _default;
+  computed: {
+    useDirection: function useDirection() {
+      if (this.info.useDirection == 1) {
+        return "科研急需";
+      } else if (this.info.useDirection == 2) {
+        return "教学急需";
+      } else {
+        return "其他(批量集采的采购周期为6~12个月)";
+      }
+    },
+    totalMoney: function totalMoney() {
+
+      if (this.batchList) {
+        var total = 0;
+        // console.log(typeof(this.batchList[0].money), 'type')
+        //确保传递的参数是number类型
+        for (var i = 0; i < this.batchList.length; i++) {
+          if (typeof this.batchList[0].money != 'number') {
+            total += parseFloat(this.batchList[i].money);
+          } else {
+            total += this.batchList[i].money;
+          }
+        }
+        return total;
+      } else {
+
+        return '';
+      }
+    } },
+
+  methods: {
+    // 阅览报告
+    viewReport: function viewReport(path) {
+      console.log(path, 1);
+      /* 
+                            uni.downloadFile({
+                              url: 'https://example.com/somefile.pdf',
+                              success: function (res) {
+                                var filePath = res.tempFilePath;
+                                uni.openDocument({
+                                  filePath: filePath,
+                                  success: function (res) {
+                                    console.log('打开文档成功');
+                                  }
+                                });
+                              }
+                            }); */
+
+
+    },
+    //下载附件
+    viewFile: function viewFile(path) {
+      console.log(path, 2);
+      var urlz = "http://192.168.0.155:8081/purchase/base/file/download?name=".concat(path);
+      console.log(urlz);
+      uni.downloadFile({
+        url: urlz,
+        // url: `http://192.168.0.155:8081/purchase/base/file/download?name=${path}`,
+        success: function success(res) {
+          var filePath = res.tempFilePath;
+          uni.openDocument({
+            filePath: filePath,
+            // fileType:'pdf',
+            success: function success(res) {
+              console.log('打开文档成功');
+            } });
+
+        } });
+
+
+    },
+    // 获取数据
+    getData: function getData(id) {var _this = this;
+      this.$http('GET', "/web/api/purchaseInfo/get/".concat(id, "?null")).then(function (res) {
+        // this.$http('GET', `/web/api/purchaseApproval/get/${id}?null`, ).then(res => {
+        // 错误处理
+        if (res.code != 200) {
+          uni.showToast({
+            title: res.msg,
+            duration: 2000,
+            icon: 'loading' });
+
+          setTimeout(function () {
+            uni.hideToast();
+          }, 1000);
+        } else {
+          uni.showToast({
+            title: '更新页面成功',
+            duration: 2000 });
+
+          setTimeout(function () {
+            uni.hideToast();
+          }, 1000);
+          _this.listData = res.data;
+          _this.info = res.data.info;
+          _this.batchList = res.data.inventory;
+        }
+      });
+
+
+
+
+    },
+    onPullDownRefresh: function onPullDownRefresh() {
+      this.getData(this.id);
+      setTimeout(function () {
+        uni.stopPullDownRefresh();
+      }, 1000);
+
+    } } };exports.default = _default;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
 

@@ -155,12 +155,32 @@
 			<uni-list class="column2">
 				<uni-list-item title="使用方向" note="" :rightText="useDirection"></uni-list-item>
 				<uni-list-item title="急需说明" note="" :rightText="info.needContent"></uni-list-item>
-				<uni-list-item title="论证 报告及其他附件" link note="" rightText="土木建筑工程"></uni-list-item>
+				<!-- <uni-list-item title="论证 报告及其他附件" link note="" rightText="土木建筑工程"></uni-list-item> -->
+				<uni-list-item title="论证 报告及其他附件" note="" rightText=""></uni-list-item>
+				<view class="viewFile">
+					<!-- report对应评论报告 -->
+					<view class="viewFile-column" v-if="info.report">
+						<view class="viewFile-column-left">
+							<image src="../../static/images/file.png" mode=""></image>
+							{{info.report}}
+						</view>
+						<view class="viewFile-column-right" @click="viewReport(info.report)">
+							查看
+						</view>
+					</view>
+					<!--  file对应的附件 -->
+					<view class="viewFile-column" v-if="info.file">
+						<view class="viewFile-column-left">
+							<image src="../../static/images/file.png" mode=""></image>
+							{{info.file}}
+						</view>
+						<view class="viewFile-column-right" @click="viewFile(info.file)" >
+							查看
+						</view>
+					</view>
+				</view>
 				<uni-list-item title="情况说明" note="" :rightText="info.remark"></uni-list-item>
 			</uni-list>
-
-
-
 		</view>
 
 
@@ -180,7 +200,7 @@
 			}
 		},
 		onLoad(option) {
-			console.log(option,'option')
+			console.log(option, 'option')
 			this.id = option.id
 			console.log(this.id, 'id')
 			this.getData(this.id)
@@ -216,43 +236,87 @@
 			}
 		},
 		methods: {
+			// 阅览报告
+			viewReport(path){
+				console.log(path,1)
+				const urlz= `http://192.168.0.155:8081/purchase/base/file/download?name=${path}`
+				console.log(urlz)
+				uni.downloadFile({
+				  url: urlz,
+				  // url: `http://192.168.0.155:8081/purchase/base/file/download?name=${path}`,
+				  success: function (res) {
+				    var filePath = res.tempFilePath;
+				    uni.openDocument({
+				      filePath: filePath,
+					  // fileType:'pdf',
+				      success: function (res) {
+				        console.log('打开文档成功');
+				      }
+				    });
+				  }
+				});
+				
+				
+			},
+			//下载附件
+			viewFile(path){
+				console.log(path,2)
+				const urlz= `http://192.168.0.155:8081/purchase/base/file/download?name=${path}`
+				console.log(urlz)
+				uni.downloadFile({
+				  url: urlz,
+				  // url: `http://192.168.0.155:8081/purchase/base/file/download?name=${path}`,
+				  success: function (res) {
+				    var filePath = res.tempFilePath;
+				    uni.openDocument({
+				      filePath: filePath,
+					  // fileType:'pdf',
+				      success: function (res) {
+				        console.log('打开文档成功');
+				      }
+				    });
+				  }
+				});
+				
+			},
+			// 获取数据
 			getData(id) {
 				this.$http('GET', `/web/api/purchaseInfo/get/${id}?null`, ).then(res => {
-				// this.$http('GET', `/web/api/purchaseApproval/get/${id}?null`, ).then(res => {
+					// this.$http('GET', `/web/api/purchaseApproval/get/${id}?null`, ).then(res => {
 					// 错误处理
 					if (res.code != 200) {
 						uni.showToast({
-						    title: res.msg,
-						    duration: 2000,
-							icon:'loading'
+							title: res.msg,
+							duration: 2000,
+							icon: 'loading'
 						});
-						setTimeout(()=>{
+						setTimeout(() => {
 							uni.hideToast();
-						},1000)
+						}, 1000)
 					} else {
 						uni.showToast({
-						    title: '更新页面成功',
+							title: '更新页面成功',
 							duration: 2000
 						});
-						setTimeout(()=>{
+						setTimeout(() => {
 							uni.hideToast();
-						},1000)
+						}, 1000)
 						this.listData = res.data
 						this.info = res.data.info
 						this.batchList = res.data.inventory
 					}
 				})
-				
-				
-				
-				
+
+
+
+
 			},
 			onPullDownRefresh() {
 				this.getData(this.id)
 				setTimeout(function() {
 					uni.stopPullDownRefresh();
 				}, 1000);
-				
+
 			}
 		}
 	}
@@ -306,5 +370,35 @@
 
 	.list-table td {
 		width: auto;
+	}
+
+
+	.viewFile {
+		.viewFile-column {
+			font-size: 14px;
+			color: #3b4144;
+			display: flex;
+			justify-content: space-between;
+			padding: 0 16px;
+
+			view {
+				line-height: 48rpx;
+			}
+
+			.viewFile-column-left {
+				image {
+					vertical-align: text-top;
+					margin-right: 17rpx;
+					width: 32rpx;
+					height: 32rpx;
+				}
+			}
+
+			.viewFile-column-right {
+				color: #5592F7;
+			}
+		}
+
+
 	}
 </style>

@@ -34,7 +34,7 @@
 					'待执行',
 					'执行中',
 					'已完结',
-					'申请终止',
+					// '申请终止',
 					'已终止',
 				],
 				activeIndex: 0, //传入的值必须是NUMBER类型
@@ -47,7 +47,7 @@
 			this.$http('get', '/web/api/declare/get/count?null').then((res) => {
 				console.log(res.data)
 			})
-			this.getData(0)
+			this.getData(0,1)
 		},
 		methods: {
 			tabClick(index) {
@@ -56,7 +56,7 @@
 				this.indicator = index
 				console.log(this.indicator, 'indicator')
 				// 0开始
-				this.getData(index)
+				this.getData(index,1)
 			},
 			//查看详情
 			checkDetail(id) {
@@ -73,15 +73,27 @@
 			},
 			//数据请求函数
 			getData(k, j) {
+				
+				console.log(j,'jjjjj')
+				//处理WEB端的异常数据请求格式
+				if(k==4){
+					k=k+1
+				}else if(k==5){
+					k=k+2
+				}
+				
 				const data = {
-					page: j,
+					account: null,
+					orgId: "",
+					start: "",
 					size: 15,
+					page: j,
+					// page: 1,
 					username: null,
 					number: null,
-					account: null,
-					state: k + 1,
+					state: k+1,
 				}
-				this.$http('POST', '/web/api/declare/select/page', data).then(res => {
+				this.$http('POST', '/web/api/purchaseInfo/select/page', data).then(res => {
 					if (res.code != 200) {
 						// console.log(res,'res')
 						uni.showLoading({
@@ -114,7 +126,7 @@
 			},
 			onPullDownRefresh() {
 				this.listData = []
-				this.getData(this.indicator)
+				this.getData(this.indicator,1)
 				setTimeout(function() {
 					uni.stopPullDownRefresh();
 				}, 1000);

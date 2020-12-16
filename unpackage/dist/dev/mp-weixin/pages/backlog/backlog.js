@@ -94,10 +94,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "components", function() { return components; });
 var components = {
   tabs: function() {
-    return __webpack_require__.e(/*! import() | components/tabs/tabs */ "components/tabs/tabs").then(__webpack_require__.bind(null, /*! @/components/tabs/tabs.vue */ 60))
+    return __webpack_require__.e(/*! import() | components/tabs/tabs */ "components/tabs/tabs").then(__webpack_require__.bind(null, /*! @/components/tabs/tabs.vue */ 71))
   },
-  uniPopup: function() {
-    return Promise.all(/*! import() | components/uni-popup/uni-popup */[__webpack_require__.e("common/vendor"), __webpack_require__.e("components/uni-popup/uni-popup")]).then(__webpack_require__.bind(null, /*! @/components/uni-popup/uni-popup.vue */ 74))
+  easySelect: function() {
+    return __webpack_require__.e(/*! import() | components/easy-select/easy-select */ "components/easy-select/easy-select").then(__webpack_require__.bind(null, /*! @/components/easy-select/easy-select.vue */ 85))
   }
 }
 var render = function() {
@@ -137,7 +137,36 @@ __webpack_require__.r(__webpack_exports__);
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var uniPopup = function uniPopup() {Promise.all(/*! require.ensure | components/uni-popup/uni-popup */[__webpack_require__.e("common/vendor"), __webpack_require__.e("components/uni-popup/uni-popup")]).then((function () {return resolve(__webpack_require__(/*! @/components/uni-popup/uni-popup.vue */ 74));}).bind(null, __webpack_require__)).catch(__webpack_require__.oe);};var uniPopupMessage = function uniPopupMessage() {__webpack_require__.e(/*! require.ensure | components/uni-popup/uni-popup-message */ "components/uni-popup/uni-popup-message").then((function () {return resolve(__webpack_require__(/*! @/components/uni-popup/uni-popup-message.vue */ 83));}).bind(null, __webpack_require__)).catch(__webpack_require__.oe);};var uniPopupDialog = function uniPopupDialog() {__webpack_require__.e(/*! require.ensure | components/uni-popup/uni-popup-dialog */ "components/uni-popup/uni-popup-dialog").then((function () {return resolve(__webpack_require__(/*! @/components/uni-popup/uni-popup-dialog.vue */ 90));}).bind(null, __webpack_require__)).catch(__webpack_require__.oe);};var Tabs = function Tabs() {__webpack_require__.e(/*! require.ensure | components/tabs/tabs */ "components/tabs/tabs").then((function () {return resolve(__webpack_require__(/*! @/components/tabs/tabs.vue */ 60));}).bind(null, __webpack_require__)).catch(__webpack_require__.oe);};var _default =
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var easySelect = function easySelect() {__webpack_require__.e(/*! require.ensure | components/easy-select/easy-select */ "components/easy-select/easy-select").then((function () {return resolve(__webpack_require__(/*! @/components/easy-select/easy-select.vue */ 85));}).bind(null, __webpack_require__)).catch(__webpack_require__.oe);};var Tabs = function Tabs() {__webpack_require__.e(/*! require.ensure | components/tabs/tabs */ "components/tabs/tabs").then((function () {return resolve(__webpack_require__(/*! @/components/tabs/tabs.vue */ 71));}).bind(null, __webpack_require__)).catch(__webpack_require__.oe);};var _default =
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -175,84 +204,213 @@ __webpack_require__.r(__webpack_exports__);
 {
   components: {
     Tabs: Tabs,
-    uniPopup: uniPopup,
-    uniPopupMessage: uniPopupMessage,
-    uniPopupDialog: uniPopupDialog },
+    easySelect: easySelect },
 
   data: function data() {
     return {
+      id: null,
       tabs: [
       '待审核',
       '审核过',
       '驳回'],
 
       activeIndex: 0, //传入的值必须是NUMBER类型
-      listData: [] };
+      listData: [],
+      state: 3, //记录数据的状态
+      pageTotal: null, //总页数
+      page: null, //当前页数
+      showPopupz: false, //是否展示模态框
+      confirmIndex: null, //选择框的选择结果
+      checkData: null, //审核数据条整条数据
+      checkIndex: null, //审核数据索引
+      optionz: [{
+        value: '1',
+        label: '通过' },
+      {
+        value: '2',
+        label: '驳回' },
+      {
+        value: '3',
+        label: '终止' }],
+
+      selecValue: '通过', //select 初始选择
+      selecState: 1,
+      textareaz: '' };
 
   },
-  onLoad: function onLoad() {
-    this.$http('POST', '/web/api/agency/select/page').then(function (res) {
-      console.log(res.data);
-    });
-    this.getData(0);
-    console.log(this.listData, 123);
+  onLoad: function onLoad(option) {
+    // console.log(option, 'option')
+    this.id = option.id;
+    this.getData(3, 1);
+    // console.log(this.listData, 123)
   },
   methods: {
+    // 查看详情
+    checkDetail: function checkDetail(item) {
+      console.log(item, 'checkData');
+      var id = item.id;
+      uni.navigateTo({
+        url: "../backlogDetail/backlogDetail?id=".concat(id) });
+
+    },
+    selectOne: function selectOne(options) {
+      this.selecValue = options.label;
+      this.selecState = options.value;
+      // console.log(options,this.selecState)
+    },
+    // 自定义模态框取消
+    closez: function closez() {
+      this.showPopupz = false;
+      this.confirmIndex = 0;
+    },
+    // 自定义模态框确认
+    onOkz: function onOkz() {var _this2 = this;
+      this.showPopupz = false;
+      this.confirmIndex = 1;
+
+      var id = this.checkData.id;
+      var state = this.selecState;
+      var remark = this.textareaz;
+      var userId = null;
+
+      var data = {
+        "id": id,
+        "state": state,
+        "remark": remark,
+        "userId": userId };
+
+      console.log(this.selecState, 'selecStare', data, this.textareaz);
+
+
+
+
+      if (this.selecState == 3) {
+        this.$http("PUT", '/web/api/purchaseApproval/update/stop', data).then(function (res) {
+          console.log(res, 'rrrrrssssddd');
+          if (res.code == 200) {
+            _this2.listData.splice(_this2.checkIndex, 1);
+            uni.showToast({
+              title: res.msg });
+
+            setTimeout(function () {
+              uni.hideToast();
+            }, 2000);
+            console.log('终止成功');
+          } else {
+            uni.showToast({
+              title: res.msg });
+
+            setTimeout(function () {
+              uni.hideToast();
+            }, 2000);
+            // 删除失败了之后,将列表数据清零,然后进行赋值
+            _this2.listData = [];
+            _this2.getData(_this2.state, 1);
+          }
+        });
+      } else {
+        this.$http("PUT", '/web/api/purchaseApproval/update/approval', data).then(function (res) {
+          console.log(res, 'rrrrrssssddd');
+          if (res.code == 200) {
+            uni.showToast({
+              title: res.msg });
+
+            setTimeout(function () {
+              uni.hideToast();
+            }, 2000);
+            _this2.listData.splice(_this2.checkIndex, 1);
+          } else {
+            uni.showToast({
+              title: res.msg });
+
+            setTimeout(function () {
+              uni.hideToast();
+            }, 2000);
+          }
+        });
+      }
+
+    },
     // 点击Tab显示索引
     tabClick: function tabClick(index) {
-      console.log(index, 'index');
-
-
+      this.listData = [];
+      // this.getData(index,1)
+      if (index == 0) {
+        this.state = 3;
+        this.getData(3, 1);
+      } else if (index == 1) {
+        this.state = 1;
+        this.getData(1, 1);
+      } else {
+        this.state = 2;
+        this.getData(2, 1);
+      }
+      // console.log(index, 'index')
     },
-    open: function open() {
-      this.$refs.popup.open();
-    },
-    close: function close(done) {
-      // TODO 做一些其他的事情，before-close 为true的情况下，手动执行 done 才会关闭对话框
-      // ...
-      done();
-    },
-    confirm: function confirm(done, value) {
-      // 输入框的值
-      console.log(value);
-      // TODO 做一些其他的事情，手动执行 done 才会关闭对话框
-      // ...
-      done();
+    open: function open(id, index) {
+      this.showPopupz = true;
+      this.checkData = {};
+      this.checkData = id;
+      this.checkIndex = index;
     },
     //数据请求函数
-    getData: function getData(k, j) {var _this = this;
-      var data = {
-        page: j,
-        size: 15,
-        username: null,
-        number: null,
-        account: null,
-        state: k + 1 };
-
-      this.$http('POST', '/web/api/agency/select/page', data).then(function (res) {
+    // j 状态  k 页数   
+    getData: function getData(j, k) {var _this3 = this;
+      this.$http('GET', "/web/app/get-upcoming/".concat(this.id, "/").concat(j, "/").concat(k, "/15")).then(function (res) {
         if (res.code != 200) {
-          // console.log(res,'res')
-          uni.showLoading({
-            title: res.msg });
+          uni.showToast({
+            title: 'res.msg' });
 
           setTimeout(function () {
-            uni.hideLoading();
-          }, 2000);
+            uni.hideToast();
+          }, 200);
         } else {
-          // console.log(res.data.list)
           if (res.data.list.length == 0) {
             uni.showToast({
-              icon: "loading",
-              title: " \u6CA1\u6709\u76F8\u5173\u9875\u9762\u4FE1\u606F ",
-              duration: 500 });
+              title: '没有相关页面信息'
+              // icon:'none'
+            });
+            setTimeout(function () {
+              uni.hideToast();
+            }, 2000);
+          } else {
+            uni.showToast({
+              title: '更新页面成功' });
 
-          }
-          var rets = res.data.list;
-          for (var i in rets) {
-            _this.listData.push(rets[i]);
+            setTimeout(function () {
+              uni.hideToast();
+            }, 2000);
+            var rets = res.data.list;
+            _this3.pageTotal = res.data.pageTotal;
+            _this3.page = res.data.page;
+            for (var i in rets) {
+              _this3.listData.push(rets[i]);
+            }
           }
         }
       });
+    },
+    // 下拉刷新
+    onPullDownRefresh: function onPullDownRefresh() {
+
+      var _this = this;
+      _this.listData = [];
+      setTimeout(function () {
+        _this.getData(_this.state, 1);
+        uni.stopPullDownRefresh();
+      }, 1000);
+    },
+    onReachBottom: function onReachBottom() {
+      if (this.page >= this.pageTotal) {
+        uni.showToast({
+          title: '没有更多数据加载' });
+
+        setTimeout(function () {
+          uni.hideToast();
+        }, 2000);
+      } else {
+        this.getData(this.state, this.page + 1);
+      }
     } } };exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 

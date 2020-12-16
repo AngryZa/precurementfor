@@ -173,7 +173,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
 var _default =
 {
   data: function data() {
@@ -183,27 +182,40 @@ var _default =
   },
   onLoad: function onLoad(option) {
     // console.log(option, typeof option)
-    uni.getStorage({
-      key: 'personInfo',
-      success: function success(res) {
-        console.log(res.data);
-        this.personInfo = res.data;
-      } });
+    /* uni.getStorage({
+        key: 'personInfo',
+        success: function (res) {
+    		this.personInfo=res.data
+            console.log(this.personInfo,'this.personInfo');
+        }
+    }); */
+
+
+    try {
+      var value = uni.getStorageSync('personInfo');
+      if (value) {
+        this.personInfo = value;
+        // console.log(value);
+      }
+    } catch (e) {
+      // error
+    }
+
 
   },
   methods: {
     //跳转到我的采购申报
     redirect: function redirect() {
-      console.log(777);
+      // console.log(777)
       uni.navigateTo({
         url: '../procurement/procurement?id=1&name=uniapp' });
 
     },
     //跳转到我的待办页面
     redirect2: function redirect2() {
-      console.log(777);
+      console.log(this.personInfo);
       uni.navigateTo({
-        url: '../backlog/backlog?id=1&name=uniapp' });
+        url: "../backlog/backlog?id=".concat(this.personInfo.id, "&name=").concat(this.personInfo.name) });
 
     },
     //安全退出

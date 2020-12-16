@@ -203,22 +203,27 @@ var _default =
     },
     // 发送验证码
     sendMessage: function sendMessage() {
-      uni.request({
-        url: "http://192.168.0.163:8081/purchase/app/get-code/".concat(this.loginInformation.phoneNumber), //仅为示例，并非真实接口地址。
-        data: {
-          // getcode: '13548077245'
-        },
-        header: {
-          // 'custom-header': 'hello',
-          //自定义请求头信息
-        },
-        success: function success(res) {
-          // console.log(res.data);
-        } });
+      /* uni.request({
+                                         	url: `http://192.168.0.163:8081/purchase/app/get-code/${this.loginInformation.phoneNumber}`, //仅为示例，并非真实接口地址。
+                                         	data: {
+                                         		// getcode: '13548077245'
+                                         	},
+                                         	header: {
+                                         		// 'custom-header': 'hello',
+                                         		//自定义请求头信息
+                                         	},
+                                         	success: (res) => {
+                                         		// console.log(res.data);
+                                         	}
+                                         });
+                                         if (this.btnDisabled) {
+                                         	return;
+                                         } */
+      this.$http('get', "/web/app/get-code/".concat(this.loginInformation.phoneNumber)).then(function (data) {
+        console.log(123, data);
+      });
 
-      if (this.btnDisabled) {
-        return;
-      }
+
       this.getSecond(5);
     },
     getSecond: function getSecond(wait) {
@@ -254,7 +259,7 @@ var _default =
 
         return false;
       }
-      var url = "/app/login/".concat(this.loginInformation.phoneNumber, "/").concat(this.loginInformation.authCode);
+      var url = "/web/app/login/".concat(this.loginInformation.phoneNumber, "/").concat(this.loginInformation.authCode);
       this.$http('get', url, "").then(function (res) {
         console.log(res, typeof res, 'res34843839jfdjhhf');
 

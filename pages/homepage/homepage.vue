@@ -68,8 +68,6 @@
 			} catch (e) {
 				// error
 			}
-
-
 		},
 		methods: {
 			//跳转到我的采购申报
