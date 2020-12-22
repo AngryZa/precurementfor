@@ -6,7 +6,8 @@
     "pages/approveDetail/approveDetail",
     "pages/backlog/backlog",
     "pages/purchaseDetail/purchaseDetail",
-    "pages/backlogDetail/backlogDetail"
+    "pages/backlogDetail/backlogDetail",
+    "pages/backlogApprove/backlogApprove"
   ],
   "subPackages": [],
   "window": {
@@ -15,5 +16,6 @@
     "navigationBarBackgroundColor": "#F8F8F8",
     "backgroundColor": "#F8F8F8"
   },
-  "usingComponents": {}
+  "usingComponents": {},
+  "sitemapLocation": "sitemap37.json"
 }

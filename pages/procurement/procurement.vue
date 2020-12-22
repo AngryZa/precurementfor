@@ -95,21 +95,42 @@
 				}
 				this.$http('POST', '/web/api/purchaseInfo/select/page', data).then(res => {
 					if (res.code != 200) {
-						// console.log(res,'res')
+						
 						uni.showLoading({
 							title: res.msg
 						});
 						setTimeout(function() {
 							uni.hideLoading();
+							// if(res.msg=="token认证失败,请重新登录!"){
+								/* uni.reLaunch({
+									url: '../index/index'
+								}); */
+								
+								// 在C页面内 navigateBack，将返回A页面
+								uni.navigateBack({
+								    delta: 1
+								});
+
+							// }
 						}, 2000);
 					} else {
 						// console.log(res.data.list)
 						if (res.data.list.length == 0) {
 							uni.showToast({
-								icon: "loading",
-								title: ` 没有相关页面信息 `,
-								duration: 500
+								title: '没有相关页面信息',
+								duration: 2000
 							});
+							setTimeout(() => {
+								uni.hideToast();
+							}, 1000)
+						}else{
+							uni.showToast({
+								title: '更新页面成功',
+								duration: 2000
+							});
+							setTimeout(() => {
+								uni.hideToast();
+							}, 1000)
 						}
 						let rets = res.data.list
 						for (var i in rets) {

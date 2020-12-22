@@ -94,10 +94,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "components", function() { return components; });
 var components = {
   tabs: function() {
-    return __webpack_require__.e(/*! import() | components/tabs/tabs */ "components/tabs/tabs").then(__webpack_require__.bind(null, /*! @/components/tabs/tabs.vue */ 71))
+    return __webpack_require__.e(/*! import() | components/tabs/tabs */ "components/tabs/tabs").then(__webpack_require__.bind(null, /*! @/components/tabs/tabs.vue */ 79))
   },
   easySelect: function() {
-    return __webpack_require__.e(/*! import() | components/easy-select/easy-select */ "components/easy-select/easy-select").then(__webpack_require__.bind(null, /*! @/components/easy-select/easy-select.vue */ 85))
+    return __webpack_require__.e(/*! import() | components/easy-select/easy-select */ "components/easy-select/easy-select").then(__webpack_require__.bind(null, /*! @/components/easy-select/easy-select.vue */ 93))
   }
 }
 var render = function() {
@@ -137,7 +137,7 @@ __webpack_require__.r(__webpack_exports__);
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var easySelect = function easySelect() {__webpack_require__.e(/*! require.ensure | components/easy-select/easy-select */ "components/easy-select/easy-select").then((function () {return resolve(__webpack_require__(/*! @/components/easy-select/easy-select.vue */ 85));}).bind(null, __webpack_require__)).catch(__webpack_require__.oe);};var Tabs = function Tabs() {__webpack_require__.e(/*! require.ensure | components/tabs/tabs */ "components/tabs/tabs").then((function () {return resolve(__webpack_require__(/*! @/components/tabs/tabs.vue */ 71));}).bind(null, __webpack_require__)).catch(__webpack_require__.oe);};var _default =
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var easySelect = function easySelect() {__webpack_require__.e(/*! require.ensure | components/easy-select/easy-select */ "components/easy-select/easy-select").then((function () {return resolve(__webpack_require__(/*! @/components/easy-select/easy-select.vue */ 93));}).bind(null, __webpack_require__)).catch(__webpack_require__.oe);};var Tabs = function Tabs() {__webpack_require__.e(/*! require.ensure | components/tabs/tabs */ "components/tabs/tabs").then((function () {return resolve(__webpack_require__(/*! @/components/tabs/tabs.vue */ 79));}).bind(null, __webpack_require__)).catch(__webpack_require__.oe);};var _default =
 
 
 
@@ -245,6 +245,14 @@ __webpack_require__.r(__webpack_exports__);
     // console.log(this.listData, 123)
   },
   methods: {
+    //查看审批详情
+    checkApprove: function checkApprove(item) {
+      console.log(item);
+      var id = item.id;
+      uni.navigateTo({
+        url: "../backlogApprove/backlogApprove?id=".concat(id) });
+
+    },
     // 查看详情
     checkDetail: function checkDetail(item) {
       console.log(item, 'checkData');
@@ -329,7 +337,6 @@ __webpack_require__.r(__webpack_exports__);
           }
         });
       }
-
     },
     // 点击Tab显示索引
     tabClick: function tabClick(index) {

@@ -80,9 +80,22 @@
 			//跳转到我的待办页面
 			redirect2() {
 				console.log(this.personInfo)
-				uni.navigateTo({
-					url: `../backlog/backlog?id=${this.personInfo.id}&name=${this.personInfo.name}`
-				});
+
+				if (this.personInfo == null) {
+					uni.showLoading({
+						title: "token认证失败,请重新登录!"
+					});
+					setTimeout(function() {
+						uni.hideLoading();
+						uni.reLaunch({
+							url: '../index/index'
+						});
+					}, 2000);
+				} else {
+					uni.navigateTo({
+						url: `../backlog/backlog?id=${this.personInfo.id}&name=${this.personInfo.name}`
+					});
+				}
 			},
 			//安全退出
 			exit() {
@@ -104,8 +117,6 @@
 						}
 					}
 				});
-
-
 				uni.reLaunch({
 					url: '../index/index'
 				});

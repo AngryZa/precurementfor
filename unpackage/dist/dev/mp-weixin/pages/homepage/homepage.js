@@ -200,8 +200,6 @@ var _default =
     } catch (e) {
       // error
     }
-
-
   },
   methods: {
     //跳转到我的采购申报
@@ -214,9 +212,22 @@ var _default =
     //跳转到我的待办页面
     redirect2: function redirect2() {
       console.log(this.personInfo);
-      uni.navigateTo({
-        url: "../backlog/backlog?id=".concat(this.personInfo.id, "&name=").concat(this.personInfo.name) });
 
+      if (this.personInfo == null) {
+        uni.showLoading({
+          title: "token认证失败,请重新登录!" });
+
+        setTimeout(function () {
+          uni.hideLoading();
+          uni.reLaunch({
+            url: '../index/index' });
+
+        }, 2000);
+      } else {
+        uni.navigateTo({
+          url: "../backlog/backlog?id=".concat(this.personInfo.id, "&name=").concat(this.personInfo.name) });
+
+      }
     },
     //安全退出
     exit: function exit() {
@@ -237,8 +248,6 @@ var _default =
 
           }
         } });
-
-
 
       uni.reLaunch({
         url: '../index/index' });

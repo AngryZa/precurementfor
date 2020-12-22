@@ -94,10 +94,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "components", function() { return components; });
 var components = {
   uniList: function() {
-    return __webpack_require__.e(/*! import() | components/uni-list/uni-list */ "components/uni-list/uni-list").then(__webpack_require__.bind(null, /*! @/components/uni-list/uni-list.vue */ 92))
+    return __webpack_require__.e(/*! import() | components/uni-list/uni-list */ "components/uni-list/uni-list").then(__webpack_require__.bind(null, /*! @/components/uni-list/uni-list.vue */ 100))
   },
   uniListItem: function() {
-    return __webpack_require__.e(/*! import() | components/uni-list-item/uni-list-item */ "components/uni-list-item/uni-list-item").then(__webpack_require__.bind(null, /*! @/components/uni-list-item/uni-list-item.vue */ 99))
+    return __webpack_require__.e(/*! import() | components/uni-list-item/uni-list-item */ "components/uni-list-item/uni-list-item").then(__webpack_require__.bind(null, /*! @/components/uni-list-item/uni-list-item.vue */ 107))
   }
 }
 var render = function() {
@@ -138,6 +138,36 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _regenerator = _interopRequireDefault(__webpack_require__(/*! ./node_modules/@babel/runtime/regenerator */ 66));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {try {var info = gen[key](arg);var value = info.value;} catch (error) {reject(error);return;}if (info.done) {resolve(value);} else {Promise.resolve(value).then(_next, _throw);}}function _asyncToGenerator(fn) {return function () {var self = this,args = arguments;return new Promise(function (resolve, reject) {var gen = fn.apply(self, args);function _next(value) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);}function _throw(err) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);}_next(undefined);});};} //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -373,6 +403,43 @@ var _default =
     } },
 
   methods: {
+    // 阅览报告
+    viewReport: function viewReport(path) {
+      var urlz = "http://192.168.0.155:8081/purchase/base/file/download?name=".concat(path);
+      uni.downloadFile({
+        url: urlz,
+        success: function success(res) {
+          var filePath = res.tempFilePath;
+          uni.openDocument({
+            filePath: filePath,
+            success: function success(res) {
+              console.log('打开文档成功');
+            } });
+
+        } });
+
+    },
+    //下载附件
+    viewFile: function viewFile(path) {
+      var urlz = "http://192.168.0.155:8081/purchase/base/file/download?name=".concat(path);
+      uni.downloadFile({
+        url: urlz,
+        success: function success(res) {
+          console.log(res, 'res');
+          var filePath = res.tempFilePath;
+          uni.openDocument({
+            filePath: filePath,
+            success: function success(res) {
+              console.log('打开文档成功');
+            },
+            fail: function fail(res) {
+              console.log(res, '失败');
+            } });
+
+        } });
+
+
+    },
     // 获取申请单位列表
     getList: function getList() {var _this = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee() {return _regenerator.default.wrap(function _callee$(_context) {while (1) {switch (_context.prev = _context.next) {case 0:return _context.abrupt("return",
                 new Promise(function (resolve, reject) {
@@ -381,12 +448,6 @@ var _default =
                       // this.applicantList=res.data
                       resolve(res.data);
                     } else {
-                      /* uni.showToast({
-                            	title:res.msg
-                            })
-                            setTimeout(()=>{
-                            	uni.hideToast()
-                            },2000) */
                       reject(res);
                     }
                   });
@@ -394,7 +455,6 @@ var _default =
 
     },
     getData: function getData(id) {var _this2 = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee2() {var ret;return _regenerator.default.wrap(function _callee2$(_context2) {while (1) {switch (_context2.prev = _context2.next) {case 0:_context2.next = 2;return (
-
 
                   _this2.getList());case 2:ret = _context2.sent;
                 // console.log(ret,'1')

@@ -62,6 +62,15 @@
             }
             
         }
+        ,{
+            "path" : "pages/backlogApprove/backlogApprove",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",

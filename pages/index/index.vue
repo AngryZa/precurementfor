@@ -10,7 +10,7 @@
 		</view>
 		<view class="input-authcode">
 			<image src="../../static/images/verification.png" mode="widthFix"></image>
-			<input type="text" value="" placeholder="请输入验证码" v-model="loginInformation.authCode" />
+			<input type="text" value="" placeholder="请输入验证码"  maxlength="6" v-model="loginInformation.authCode" />
 			<text class="getcode" @click="sendMessage">{{btnText}}</text>
 		</view>
 		<view class="submit">
@@ -81,8 +81,13 @@
 				if (this.btnDisabled) {
 					return;
 				} */
+				/* this.$http('get',`/web/app/get-code/${this.loginInformation.phoneNumber}`).then((data)=>{
+					console.log(123,data)
+				}) */
 				this.$http('get',`/web/app/get-code/${this.loginInformation.phoneNumber}`).then((data)=>{
 					console.log(123,data)
+				}).catch((err)=>{
+					console.log(err,'shivaul')
 				})
 				
 				
@@ -106,6 +111,7 @@
 				}
 			}, // 登陆跳转
 			submit() {
+				
 				if (!this.loginInformation.phoneNumber) {
 					uni.showToast({
 						title: '请输入手机号码',

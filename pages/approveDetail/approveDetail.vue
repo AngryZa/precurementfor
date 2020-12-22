@@ -64,9 +64,6 @@
 
 <style lang="scss" scoped>
 	.wrapper {
-		/* .steps{
-			padding: 0 30rpx;
-			overflow: hidden;
-		} */
+		
 	}
 </style>

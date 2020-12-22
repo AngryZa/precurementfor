@@ -86,4 +86,7 @@
 .viewFile .viewFile-column .viewFile-column-right.data-v-55b3d2f4 {
   color: #5592F7;
 }
+/* .webviewStyles{
+	border: 1px solid black;
+} */
 

@@ -4,7 +4,7 @@
 			<text class="uni-dialog-title-text" :class="['uni-popup__'+dialogType]">{{title}}</text>
 		</view>
 		<view class="uni-dialog-content">
-			<text class="uni-dialog-content-text" v-if="mode === 'base'">{{content}}</text>
+			<text class="uni-dialog-content-text" v-if="mode === 'base'">{{content?content:'无'}}</text>
 			<input v-else class="uni-dialog-input" v-model="val" type="text" :placeholder="placeholder" :focus="focus" >
 		</view>
 		<view class="uni-dialog-button-group">

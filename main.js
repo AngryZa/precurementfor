@@ -3,6 +3,7 @@ import App from './App'
 import request from '@/request/request.js'
 
 Vue.prototype.$http = request.http;
+
 Vue.config.productionTip = false
 
 App.mpType = 'app'

@@ -1,0 +1,1 @@
+<view class="wrapper data-v-1c9ec274"><uni-steps class="steps data-v-1c9ec274" vue-id="4463bb00-1" options="{{listData.approval}}" direction="column" active="{{activekey}}" active-color="#5592F7" bind:__l="__l"></uni-steps></view>

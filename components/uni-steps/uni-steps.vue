@@ -6,7 +6,13 @@
 					<text :style="{color:index<=active?activeColor:deactiveColor}" :class="[direction==='column'?'uni-steps__column-title':'uni-steps__row-title']">{{item.roleName}}</text>
 					<text :style="{color:index<=active?activeColor:deactiveColor}" :class="[direction==='column'?'uni-steps__column-desc':'uni-steps__row-desc']">{{item.name}}&nbsp&nbsp{{item.cTime?item.cTime:'待审时间未定'}}</text>
 					<text @click="open(index)" :style="{color:index<=active?activeColor:deactiveColor}" :class="[direction==='column'?'uni-steps__column-opinion':'uni-steps__row-opinion']">
-						<image src="../../static/images/finished.png" mode="" v-if="item.remark"></image> {{item.remark?'审批意见':'未审批'}}
+						<!-- <image src="../../static/images/finished.png" mode="" v-if="item.remark"></image> {{item.remark?'审批意见':'未审批'}} -->
+						<view class="" v-if="item.state==1">
+							<image src="../../static/images/finished.png" mode=""></image> {{item.remark?'审批意见':'未审批'}}
+						</view>
+						<view class="reject" v-if="item.state==2">
+							<image src="../../static/images/cha.jpg" mode=""></image> {{item.remark?'审批意见':'未审批'}}
+						</view>
 					</text>
 				</view>
 			</view>
@@ -24,16 +30,15 @@
 				</view>
 			</view>
 		</view>
-		
+
 		<uni-popup ref="popup" type="dialog">
-			<uni-popup-dialog    title="审批意见" type="success" message="成功消息"  :content='remark'
-			 :duration="2000" :before-close="true" @close="close" @confirm="confirm"></uni-popup-dialog>
+			<uni-popup-dialog title="审批意见" type="success" message="成功消息" :content='remark' :duration="2000" :before-close="true"
+			 @close="close" @confirm="confirm"></uni-popup-dialog>
 		</uni-popup>
 	</view>
 </template>
 
 <script>
-		
 	// import Bus from "@/js/bus.js";
 	import uniIcons from '../uni-icons/uni-icons.vue'
 	import uniPopup from '@/components/uni-popup/uni-popup.vue'
@@ -77,16 +82,16 @@
 		},
 		data() {
 			return {
-				index:0 ,//点击默认值
-				remark:'1637',
-				
+				index: 0, //点击默认值
+				remark: '1637',
+
 			}
 		},
 		methods: {
 			open(key) {
-				console.log(this.options,'options')
-				this.remark=this.options[key].remark
-				console.log(this.remake,'remake')
+				console.log(this.options, 'options')
+				this.remark = this.options[key].remark
+				console.log(this.remake, 'remake')
 				this.$refs.popup.open()
 			},
 			close(done) {
@@ -306,5 +311,8 @@
 		height: 14px;
 		line-height: 14px;
 		margin: 2px 0px;
+	}
+	.reject{
+		color: red;
 	}
 </style>

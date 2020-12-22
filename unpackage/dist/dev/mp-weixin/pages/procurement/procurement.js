@@ -94,7 +94,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "components", function() { return components; });
 var components = {
   tabs: function() {
-    return __webpack_require__.e(/*! import() | components/tabs/tabs */ "components/tabs/tabs").then(__webpack_require__.bind(null, /*! @/components/tabs/tabs.vue */ 71))
+    return __webpack_require__.e(/*! import() | components/tabs/tabs */ "components/tabs/tabs").then(__webpack_require__.bind(null, /*! @/components/tabs/tabs.vue */ 79))
   }
 }
 var render = function() {
@@ -134,7 +134,7 @@ __webpack_require__.r(__webpack_exports__);
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var Tabs = function Tabs() {__webpack_require__.e(/*! require.ensure | components/tabs/tabs */ "components/tabs/tabs").then((function () {return resolve(__webpack_require__(/*! @/components/tabs/tabs.vue */ 71));}).bind(null, __webpack_require__)).catch(__webpack_require__.oe);};var _default =
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var Tabs = function Tabs() {__webpack_require__.e(/*! require.ensure | components/tabs/tabs */ "components/tabs/tabs").then((function () {return resolve(__webpack_require__(/*! @/components/tabs/tabs.vue */ 79));}).bind(null, __webpack_require__)).catch(__webpack_require__.oe);};var _default =
 
 
 
@@ -170,7 +170,7 @@ __webpack_require__.r(__webpack_exports__);
       '待执行',
       '执行中',
       '已完结',
-      '申请终止',
+      // '申请终止',
       '已终止'],
 
       activeIndex: 0, //传入的值必须是NUMBER类型
@@ -183,7 +183,7 @@ __webpack_require__.r(__webpack_exports__);
     this.$http('get', '/web/api/declare/get/count?null').then(function (res) {
       console.log(res.data);
     });
-    this.getData(0);
+    this.getData(0, 1);
   },
   methods: {
     tabClick: function tabClick(index) {
@@ -192,7 +192,7 @@ __webpack_require__.r(__webpack_exports__);
       this.indicator = index;
       console.log(this.indicator, 'indicator');
       // 0开始
-      this.getData(index);
+      this.getData(index, 1);
     },
     //查看详情
     checkDetail: function checkDetail(id) {
@@ -209,31 +209,58 @@ __webpack_require__.r(__webpack_exports__);
     },
     //数据请求函数
     getData: function getData(k, j) {var _this = this;
+
+      console.log(j, 'jjjjj');
+      //处理WEB端的异常数据请求格式
+      if (k == 4) {
+        k = k + 1;
+      } else if (k == 5) {
+        k = k + 2;
+      }
+
       var data = {
-        page: j,
+        account: null,
+        orgId: "",
+        start: "",
         size: 15,
+        page: j,
+        // page: 1,
         username: null,
         number: null,
-        account: null,
         state: k + 1 };
 
-      this.$http('POST', '/web/api/declare/select/page', data).then(function (res) {
+      this.$http('POST', '/web/api/purchaseInfo/select/page', data).then(function (res) {
         if (res.code != 200) {
-          // console.log(res,'res')
+
           uni.showLoading({
             title: res.msg });
 
           setTimeout(function () {
-            uni.hideLoading();
+            uni.hideLoading();-+
+            // if(res.msg=="token认证失败,请重新登录!"){
+            uni.reLaunch({
+              url: '../index/index' });
+
+            // }
           }, 2000);
         } else {
           // console.log(res.data.list)
           if (res.data.list.length == 0) {
             uni.showToast({
-              icon: "loading",
-              title: " \u6CA1\u6709\u76F8\u5173\u9875\u9762\u4FE1\u606F ",
-              duration: 500 });
+              title: '没有相关页面信息',
+              duration: 2000 });
 
+            setTimeout(function () {
+              uni.hideToast();
+            }, 1000);
+          } else {
+            uni.showToast({
+              title: '更新页面成功',
+              duration: 2000 });
+
+            setTimeout(function () {
+              uni.hideToast();
+            }, 1000);
           }
           var rets = res.data.list;
           for (var i in rets) {
@@ -250,7 +277,7 @@ __webpack_require__.r(__webpack_exports__);
     },
     onPullDownRefresh: function onPullDownRefresh() {
       this.listData = [];
-      this.getData(this.indicator);
+      this.getData(this.indicator, 1);
       setTimeout(function () {
         uni.stopPullDownRefresh();
       }, 1000);

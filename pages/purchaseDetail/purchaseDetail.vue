@@ -9,7 +9,7 @@
 				<uni-list-item title="经费账号" note="" :rightText="info.account"></uni-list-item>
 				<uni-list-item title="项目名称" note="" :rightText="info.name"></uni-list-item>
 				<uni-list-item title="计划单号" note="" :rightText="info.number"></uni-list-item>
-				<uni-list-item title="采购是否含有批量集采目录中的货物" note="" rightText="否"></uni-list-item>
+				<!-- <uni-list-item title="采购是否含有批量集采目录中的41+ 	货物" note="" rightText="否"></uni-list-item> -->
 			</uni-list>
 
 			<view class="list-table">
@@ -85,13 +85,19 @@
 									</view>
 								</td>
 								<td>
-									<view style="width: 150rpx;">
-										{{item.type}}
+									<view style="width: 150rpx;" v-if="item.type==1">
+										设备
+									</view><view style="width: 150rpx;" v-if="item.type==2">
+										家具
+									</view><view style="width: 150rpx;" v-if="item.type==3">
+										服务
+									</view><view style="width: 150rpx;" v-if="item.type==4">
+										材料
 									</view>
 								</td>
 								<td>
-									<view style="width: 150rpx;">
-										{{item.isBatch}}
+									<view style="width: 150rpx;"   >
+										{{item.isBatch==1?'是':'否'}}
 									</view>
 								</td>
 								<td>
@@ -153,7 +159,7 @@
 			</view>
 
 			<uni-list class="column2">
-				<uni-list-item title="使用方向" note="" :rightText="useDirection"></uni-list-item>
+				<uni-list-item title="使用方向" note="" :rightText="useDirection" v-if="useDirection!=999" ></uni-list-item>
 				<uni-list-item title="急需说明" note="" :rightText="info.needContent"></uni-list-item>
 				<!-- <uni-list-item title="论证 报告及其他附件" link note="" rightText="土木建筑工程"></uni-list-item> -->
 				<uni-list-item title="论证 报告及其他附件" note="" rightText=""></uni-list-item>
@@ -180,6 +186,9 @@
 					</view>
 				</view>
 				<uni-list-item title="情况说明" note="" :rightText="info.remark"></uni-list-item>
+				
+		
+				<!-- <web-view  :webview-styles="webviewStyles" :src="' http://view.officeapps.live.com/op/view.aspx?src='+fileSrc"></web-view> -->
 			</uni-list>
 		</view>
 
@@ -189,6 +198,7 @@
 </template>
 
 <script>
+	import request from '@/request/request.js'
 	export default {
 		data() {
 			return {
@@ -211,8 +221,10 @@
 					return "科研急需"
 				} else if (this.info.useDirection == 2) {
 					return "教学急需"
-				} else {
+				} else if (this.info.useDirection == 3){
 					return "其他(批量集采的采购周期为6~12个月)"
+				} else{
+					return 999
 				}
 			},
 			totalMoney() {
@@ -236,44 +248,41 @@
 			}
 		},
 		methods: {
+			gos(){
+				
+			},
 			// 阅览报告
 			viewReport(path){
-				console.log(path,1)
 				const urlz= `http://192.168.0.155:8081/purchase/base/file/download?name=${path}`
-				console.log(urlz)
 				uni.downloadFile({
 				  url: urlz,
-				  // url: `http://192.168.0.155:8081/purchase/base/file/download?name=${path}`,
 				  success: function (res) {
 				    var filePath = res.tempFilePath;
 				    uni.openDocument({
 				      filePath: filePath,
-					  // fileType:'pdf',
 				      success: function (res) {
 				        console.log('打开文档成功');
 				      }
 				    });
 				  }
 				});
-				
-				
 			},
 			//下载附件
 			viewFile(path){
-				console.log(path,2)
 				const urlz= `http://192.168.0.155:8081/purchase/base/file/download?name=${path}`
-				console.log(urlz)
 				uni.downloadFile({
 				  url: urlz,
-				  // url: `http://192.168.0.155:8081/purchase/base/file/download?name=${path}`,
 				  success: function (res) {
+					  console.log(res,'res')
 				    var filePath = res.tempFilePath;
 				    uni.openDocument({
 				      filePath: filePath,
-					  // fileType:'pdf',
 				      success: function (res) {
 				        console.log('打开文档成功');
-				      }
+				      },
+					  fail:function(res){
+						  console.log(res,'失败')
+					  }
 				    });
 				  }
 				});
@@ -398,7 +407,8 @@
 				color: #5592F7;
 			}
 		}
-
-
 	}
+	/* .webviewStyles{
+		border: 1px solid black;
+	} */
 </style>

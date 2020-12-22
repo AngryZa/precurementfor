@@ -11,11 +11,11 @@
 					<text>采购项目负责人：{{item.username}}</text>
 					<text>经费项目名称：{{item.name}}</text>
 					<text>经费账号：{{item.account}}</text>
-					<button  v-if="state==3?true:false"  type="default" class="btn" @click="open(item,key)">审批</button>
+					<button v-if="state==3?true:false" type="default" class="btn" @click="open(item,key)">审批</button>
 				</view>
 				<view class="details">
 					<text @click="checkDetail(item)">查看详情</text>
-					<text @click="checkApprove">查看审批详情</text>
+					<text @click="checkApprove(item)">查看审批详情</text>
 					<span class="datails-boundary">|</span>
 				</view>
 			</li>
@@ -32,6 +32,11 @@
 						<text>状态</text>
 						<easy-select class="selectz" :options="optionz" ref="easySelect" style="width: 200rpx;" :value="selecValue"
 						 @selectOne="selectOne"></easy-select>
+					</view>
+					<view class="state-choose" v-if="roleIdz==6">
+						<text>采购执行人</text>
+						<easy-select class="selectz" :options="executorList" ref="easySelect" style="width: 200rpx;" :value="selecValue2"
+						 @selectOne="selectTwo"></easy-select>
 					</view>
 
 					<view class="state-choose">
@@ -96,7 +101,11 @@
 				}],
 				selecValue:'通过' ,//select 初始选择
 				selecState:1 ,
-				textareaz:''
+				textareaz:'',
+				executorList:null ,//审批执行人列表
+				selecValue2:'请选择',
+				selecState2:'',
+				roleIdz:1000,//用于判断是否展示采购执行人选中项
 			}
 		},
 		onLoad(option) {
@@ -106,6 +115,14 @@
 			// console.log(this.listData, 123)
 		},
 		methods: {
+			//查看审批详情
+			checkApprove(item){
+				console.log(item)
+				let id=item.id
+				uni.navigateTo({
+					url: `../backlogApprove/backlogApprove?id=${id}`,
+				});
+			},
 			// 查看详情
 			checkDetail(item){
 				console.log(item,'checkData')
@@ -118,6 +135,11 @@
 				this.selecValue = options.label
 				this.selecState=options.value
 				// console.log(options,this.selecState)
+			},
+			selectTwo(options){
+				console.log(options,'5')
+				this.selecValue2=options.label
+				this.selecState2=options.value
 			},
 			// 自定义模态框取消
 			closez() {
@@ -132,7 +154,7 @@
 				const id = this.checkData.id
 				const state = this.selecState
 				const remark = this.textareaz
-				const userId = null
+				const userId = this.selecState2
 				
 				let data = {
 					"id": id,
@@ -140,11 +162,10 @@
 					"remark": remark,
 					"userId": userId
 				}
-				console.log(this.selecState,'selecStare',data,this.textareaz)
-				
-				
-				
-				
+				// console.log(data,'dataatataat')
+				// console.log(this.selecState,'selecStare',data,this.textareaz)
+				// return false
+			
 				if(this.selecState==3){
 					this.$http("PUT", '/web/api/purchaseApproval/update/stop', data).then(res => {
 						console.log(res, 'rrrrrssssddd')
@@ -173,13 +194,13 @@
 					this.$http("PUT", '/web/api/purchaseApproval/update/approval', data).then(res => {
 						console.log(res, 'rrrrrssssddd')
 						if(res.code==200){
+							this.listData.splice(this.checkIndex,1)
 							uni.showToast({
 								title: res.msg,
 							});
 							setTimeout(() => {
 								uni.hideToast();
 							}, 2000)
-							this.listData.splice(this.checkIndex,1)
 						}else{
 							uni.showToast({
 								title: res.msg,
@@ -187,10 +208,12 @@
 							setTimeout(() => {
 								uni.hideToast();
 							}, 2000)
+							// 删除失败了之后,将列表数据清零,然后进行赋值
+							// this.listData=[]
+							// this.getData(this.state,1)
 						}
 					})
 				}
-				
 			},
 			// 点击Tab显示索引
 			tabClick(index) {
@@ -213,6 +236,53 @@
 				this.checkData = {}
 				this.checkData = id
 				this.checkIndex=index
+				// console.log(id,index,'898')
+				if(id.roleId ==6){
+					this.$http('GET','/web/api/admin/select/all/8?null').then(res=>{
+						if(res.code==200){
+							this.roleIdz=6
+							this.executorList=this.dataTreating(res.data)					
+						}else{
+							
+							uni.showToast({
+								title: res.msg,
+							});
+							setTimeout(() => {
+								uni.hideToast();
+								this.closez()
+								uni.reLaunch({
+									url: '../index/index'
+								});
+							}, 2000)
+							
+						}
+					})
+				}
+			},
+			dataTreating(data){
+				console.log(data,66)
+				/* [{
+					value: '1',
+					label: '通过'
+				},{
+					value: '2',
+					label: '驳回'
+				},{
+					value: '3',
+					label: '终止'
+				}] */
+				data.map(item=>{
+					item.value=item.id
+					item.label=item.name
+				})
+				const allChosen={
+					value:'0',
+					label:'全部选中'
+				}
+				data.unshift(allChosen)
+				console.log(data,2)
+				return data 
+				
 			},
 			//数据请求函数
 			// j 状态  k 页数   
@@ -404,10 +474,9 @@
 				text{
 				}
 				.selectz{
-					
+					color:#3D8AF7;
 				}
 			}
-
 		}
 
 		.button-group {

@@ -63,4 +63,27 @@
 .list-table ._td.data-v-33cf36a4 {
   width: auto;
 }
+.viewFile .viewFile-column.data-v-33cf36a4 {
+  font-size: 14px;
+  color: #3b4144;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+          justify-content: space-between;
+  padding: 0 16px;
+}
+.viewFile .viewFile-column view.data-v-33cf36a4 {
+  line-height: 48rpx;
+}
+.viewFile .viewFile-column .viewFile-column-left image.data-v-33cf36a4 {
+  vertical-align: text-top;
+  margin-right: 17rpx;
+  width: 32rpx;
+  height: 32rpx;
+}
+.viewFile .viewFile-column .viewFile-column-right.data-v-33cf36a4 {
+  color: #5592F7;
+}
 
