@@ -106,6 +106,7 @@
 				selecValue2:'请选择',
 				selecState2:'',
 				roleIdz:1000,//用于判断是否展示采购执行人选中项
+				pageBottomupdate:false //用于处理在输入框弹出时，可能触发下拉刷新的判断
 			}
 		},
 		onLoad(option) {
@@ -145,11 +146,14 @@
 			closez() {
 				this.showPopupz = false
 				this.confirmIndex = 0
+				this.pageBottomupdate=false
 			},
 			// 自定义模态框确认
 			onOkz() {
 				this.showPopupz = false
 				this.confirmIndex = 1
+				this.pageBottomupdate=false
+				
 				
 				const id = this.checkData.id
 				const state = this.selecState
@@ -232,6 +236,8 @@
 				// console.log(index, 'index')
 			},
 			open(id,index) {
+				this.pageBottomupdate=true
+				
 				this.showPopupz = true
 				this.checkData = {}
 				this.checkData = id
@@ -332,7 +338,25 @@
 				}, 1000);
 			},
 			onReachBottom() {
-				if (this.page >= this.pageTotal) {
+				// console.log(this.pageBottomupdate,'this.pageBottomupdate',!this.pageBottomupdate)
+				if(this.pageBottomupdate){
+					// console.log(1)
+					return false
+				}else{
+					// console.log(2)
+					if (this.page >= this.pageTotal) {
+						uni.showToast({
+							title: '没有更多数据加载',
+						});
+						setTimeout(() => {
+							uni.hideToast();
+						}, 2000)
+					} else {
+						this.getData(this.state, this.page + 1)
+					}
+				}
+				
+				/* if (this.page >= this.pageTotal) {
 					uni.showToast({
 						title: '没有更多数据加载',
 					});
@@ -341,7 +365,7 @@
 					}, 2000)
 				} else {
 					this.getData(this.state, this.page + 1)
-				}
+				} */
 			}
 
 		}

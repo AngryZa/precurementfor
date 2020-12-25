@@ -55,14 +55,17 @@
             },
             "icons" : {
                 "android" : {
-                    "hdpi" : "",
-                    "xhdpi" : "",
-                    "xxhdpi" : "",
-                    "xxxhdpi" : ""
+                    "hdpi" : "C:/Users/DELL/Desktop/2.png",
+                    "xhdpi" : "C:/Users/DELL/Desktop/2.png",
+                    "xxhdpi" : "C:/Users/DELL/Desktop/2.png",
+                    "xxxhdpi" : "C:/Users/DELL/Desktop/2.png"
                 },
                 "ios" : {
-                    "appstore" : ""
+                    "appstore" : "C:/Users/DELL/Desktop/2.png"
                 }
+            },
+            "splashscreen" : {
+                "androidStyle" : "common"
             }
         }
     },
